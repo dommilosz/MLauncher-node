@@ -1,0 +1,62 @@
+<link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
+<div id="overlayContainer" class="Container-menu" style="">
+    <div id="serverSelectContent" style="display: none;">
+        <span id="serverSelectHeader">Available Servers</span>
+        <div id="serverSelectList">
+            <div id="serverSelectListScrollable">
+                <!-- Server listings populated here. -->
+            </div>
+        </div>
+        <div id="serverSelectActions" >
+            <div style="display: inline;">
+            <button id="serverSelectConfirm" class="overlayKeybindEnter" type="submit">Select</button>
+            <button id="serverSelectCreate" type="submit">Create</button>
+            </div>
+            <div id="serverSelectCancelWrapper">
+                <button id="serverSelectCancel" class="overlayKeybindEsc">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="serverCreateContent" style="">
+        <span id="serverCreateHeader">Create Instance</span>
+        <div id="serverCreateList">
+            <input type="text" id="Create_InstanceName" placeholder="Name"><br>
+            <input type="text" id="Create_InstanceDesc" placeholder="Description"><br>
+            <select id="Create_InstanceMCVersions"></select>
+        </div>
+        <div id="serverCreateActions" >
+            <div style="display: inline;">
+            <button id="serverCreate" type="submit">Create</button>
+            </div>
+            <div id="serverSelectCancelWrapper">
+                <button id="serverCreateCancel" class="overlayKeybindEsc">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="accountSelectContent" style="display: none;">
+        <span id="accountSelectHeader">Select an Account</span>
+        <div id="accountSelectList">
+            <div id="accountSelectListScrollable">
+                <!-- Accounts populated here. -->
+            </div>
+        </div>
+        <div id="accountSelectActions">
+            <button id="accountSelectConfirm" class="overlayKeybindEnter" type="submit">Select</button>
+            <div id="accountSelectCancelWrapper">
+                <button id="accountSelectCancel" class="overlayKeybindEsc">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="overlayContent">
+        <span id="overlayTitle">Lorem Ipsum:<br>Finis Illud</span>
+        <span id="overlayDesc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud..</span>
+        <div id="overlayActionContainer">
+            <button id="overlayAcknowledge" class="overlayKeybindEnter">Conare Iterum</button>
+            <div id="overlayDismissWrapper">
+                <button id="overlayDismiss" style="display: none;" class="overlayKeybindEsc">Dismiss</button>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/scripts/overlay.js"></script>
+    
+</div>
