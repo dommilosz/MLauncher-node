@@ -1640,7 +1640,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Button to open the mods folder for drop-in mods. */
-#settingsDropinFileSystemButton {
+#settingsDropinFileSystemButton, #settingsPacksFileSystemButton{
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(126, 126, 126, 0.57);
     border-radius: 3px;
@@ -1666,7 +1666,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Button to remove drop-in mods. */
-.settingsDropinRemoveButton {
+.settingsDropinRemoveButton,.settingsPackRemoveButton {
     background: none;
     border: none;
     font-size: 10px;
@@ -1678,11 +1678,11 @@ input:checked + .toggleSwitchSlider:before {
     outline: none;
     transition: 0.25s ease;
 }
-.settingsDropinRemoveButton:hover,
+.settingsDropinRemoveButton:hover,.settingsPackRemoveButton:hover,.settingsPackRemoveButton:focus,
 .settingsDropinRemoveButton:focus {
     text-shadow: 0px 0px 20px #c32625, 0px 0px 20px #c32625, 0px 0px 20px #c32625;
 }
-.settingsDropinRemoveButton:active {
+.settingsDropinRemoveButton:active,.settingsPackRemoveButton:active {
     color: #9b1f1f;
     text-shadow: 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f, 0px 0px 20px #9b1f1f;
 }
@@ -3691,7 +3691,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Server selection confirm button styles. */
-#serverSelectConfirm, #serverSelectCreate, #serverCreate,
+#serverSelectConfirm, #serverSelectCreate, #serverCreate,#serverCreateCancel,#serverSelectCancel,
 #accountSelectConfirm {
     background: none;
     border: 1px solid #ffffff;
@@ -3704,21 +3704,21 @@ input:checked + .toggleSwitchSlider:before {
     transition: 0.25s ease;
     min-height: 20.67px;
 }
-#serverSelectConfirm:hover, #serverSelectCreate:hover, #serverCreate:hover,
+#serverSelectConfirm:hover, #serverSelectCreate:hover, #serverCreate:hover,#serverCreateCancel:hover,#serverSelectCancel:hover,
 #serverSelectConfirm:focus, #serverSelectCreate:focus, #serverCreate:focus,
 #accountSelectConfirm:hover,
 #accountSelectConfirm:focus {
     box-shadow: 0px 0px 10px 0px #fff;
     outline: none;
 }
-#serverSelectConfirm, #serverSelectCreate, #serverCreate:active,
+#serverSelectConfirm, #serverSelectCreate, #serverCreate:active,#serverSelectCancel,#serverCreateCancel:hover,
 #accountSelectConfirm:active {
     border-color: rgba(255, 255, 255, 0.75);
     color: rgba(255, 255, 255, 0.75);
 }
 
 /* Server selection cancel button styles. */
-#serverSelectCancel,#serverCreateCancel,
+
 #accountSelectCancel {
     font-weight: bold;
     font-size: 10px;
@@ -3803,4 +3803,8 @@ input:checked + .toggleSwitchSlider:before {
 /* Class which is applied when the spinner image is spinning. */
 .rotating {
     animation: rotating 10s linear infinite;
+}
+
+.icon-select:hover{
+    opacity: 0.7;
 }

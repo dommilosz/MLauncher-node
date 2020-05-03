@@ -139,12 +139,10 @@ updateSelectedAccount(ConfigManager.getSelectedAccount())
 
 // Bind selected server
 function updateSelectedServer(serv){
-    if(getCurrentView() === VIEWS.settings){
-        saveAllModConfigurations()
-    }
     ConfigManager.setSelectedServer(serv != null ? serv.id : null)
     ConfigManager.save()
     server_selection_button.innerHTML = '\u2022 ' + (serv != null ? serv.name : 'No Server Selected')
+    document.getElementById('icon-preview').src = serv.icon;
     if(getCurrentView() === VIEWS.settings){
         animateModsTabRefresh()
     }
@@ -216,8 +214,16 @@ const refreshMojangStatuses = async function(){
     document.getElementById('mojang_status_icon').style.color = Mojang.statusToHex(status)
 }
 
+let mcVersions = null;
+const getMcVersions = async function(){
+    Mojang.getMCVersions().then((res)=>{
+        mcVersions = res;
+    })
+    
+}
 
 refreshMojangStatuses()
+getMcVersions();
 // Server Status is refreshed in uibinder.js on distributionIndexDone.
 
 // Set refresh rate to once every 5 minutes.

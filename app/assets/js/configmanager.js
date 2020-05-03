@@ -104,7 +104,6 @@ const DEFAULT_CONFIG = {
     selectedServer: null, // Resolved
     selectedAccount: null,
     authenticationDatabase: {},
-    modConfigurations: []
 }
 
 let config = null
@@ -403,56 +402,6 @@ exports.setSelectedAccount = function(uuid){
     return authAcc
 }
 
-/**
- * Get an array of each mod configuration currently stored.
- * 
- * @returns {Array.<Object>} An array of each stored mod configuration.
- */
-exports.getModConfigurations = function(){
-    return config.modConfigurations
-}
-
-/**
- * Set the array of stored mod configurations.
- * 
- * @param {Array.<Object>} configurations An array of mod configurations.
- */
-exports.setModConfigurations = function(configurations){
-    config.modConfigurations = configurations
-}
-
-/**
- * Get the mod configuration for a specific server.
- * 
- * @param {string} serverid The id of the server.
- * @returns {Object} The mod configuration for the given server.
- */
-exports.getModConfiguration = function(serverid){
-    const cfgs = config.modConfigurations
-    for(let i=0; i<cfgs.length; i++){
-        if(cfgs[i].id === serverid){
-            return cfgs[i]
-        }
-    }
-    return null
-}
-
-/**
- * Set the mod configuration for a specific server. This overrides any existing value.
- * 
- * @param {string} serverid The id of the server for the given mod configuration.
- * @param {Object} configuration The mod configuration for the given server.
- */
-exports.setModConfiguration = function(serverid, configuration){
-    const cfgs = config.modConfigurations
-    for(let i=0; i<cfgs.length; i++){
-        if(cfgs[i].id === serverid){
-            cfgs[i] = configuration
-            return
-        }
-    }
-    cfgs.push(configuration)
-}
 
 // User Configurable Settings
 

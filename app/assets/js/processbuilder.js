@@ -40,7 +40,7 @@ class ProcessBuilder {
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.log('Using liteloader:', this.usingLiteLoader)
-        const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.id).mods, this.server.getModules())
+        
         
         // Mod list below 1.13
         if(!Util.mcVersionAtLeast('1.13', this.server.minecraftVersion)){
@@ -115,74 +115,6 @@ class ProcessBuilder {
         return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && (typeof modCfg.value !== 'undefined' ? modCfg.value : true))) : required != null ? required.isDefault() : true
     }
 
-    /**
-     * Function which performs a preliminary scan of the top level
-     * mods. If liteloader is present here, we setup the special liteloader
-     * launch options. Note that liteloader is only allowed as a top level
-     * mod. It must not be declared as a submodule.
-     */
-    setupLiteLoader(){
-        for(let ll of this.server.getModules()){
-            if(ll.getType() === DistroManager.Types.LiteLoader){
-                if(!ll.getRequired().isRequired()){
-                    const modCfg = ConfigManager.getModConfiguration(this.server.id).mods
-                    if(ProcessBuilder.isModEnabled(modCfg[ll.getVersionlessID()], ll.getRequired())){
-                        if(fs.existsSync(ll.getArtifact().getPath())){
-                            this.usingLiteLoader = true
-                            this.llPath = ll.getArtifact().getPath()
-                        }
-                    }
-                } else {
-                    if(fs.existsSync(ll.getArtifact().getPath())){
-                        this.usingLiteLoader = true
-                        this.llPath = ll.getArtifact().getPath()
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Resolve an array of all enabled mods. These mods will be constructed into
-     * a mod list format and enabled at launch.
-     * 
-     * @param {Object} modCfg The mod configuration object.
-     * @param {Array.<Object>} mdls An array of modules to parse.
-     * @returns {{fMods: Array.<Object>, lMods: Array.<Object>}} An object which contains
-     * a list of enabled forge mods and litemods.
-     */
-    resolveModConfiguration(modCfg, mdls){
-        let fMods = []
-        let lMods = []
-
-        for(let mdl of mdls){
-            const type = mdl.getType()
-            if(type === DistroManager.Types.ForgeMod || type === DistroManager.Types.LiteMod || type === DistroManager.Types.LiteLoader){
-                const o = !mdl.getRequired().isRequired()
-                const e = ProcessBuilder.isModEnabled(modCfg[mdl.getVersionlessID()], mdl.getRequired())
-                if(!o || (o && e)){
-                    if(mdl.hasSubModules()){
-                        const v = this.resolveModConfiguration(modCfg[mdl.getVersionlessID()].mods, mdl.getSubModules())
-                        fMods = fMods.concat(v.fMods)
-                        lMods = lMods.concat(v.lMods)
-                        if(mdl.type === DistroManager.Types.LiteLoader){
-                            continue
-                        }
-                    }
-                    if(mdl.type === DistroManager.Types.ForgeMod){
-                        fMods.push(mdl)
-                    } else {
-                        lMods.push(mdl)
-                    }
-                }
-            }
-        }
-
-        return {
-            fMods,
-            lMods
-        }
-    }
 
     _isBelowOneDotSeven() {
         return Number(this.forgeData.id.split('-')[0].split('.')[1]) <= 7

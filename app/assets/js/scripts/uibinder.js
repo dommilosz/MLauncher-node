@@ -129,7 +129,6 @@ function showFatalStartupError(){
  */
 function onDistroRefresh(data){
     updateSelectedServer(data.getServer(ConfigManager.getSelectedServer()))
-    refreshServerStatus()
     initNews()
 }
 
@@ -146,49 +145,6 @@ function onDistroRefresh(data){
  * 
  * @returns {boolean | Object} The resolved mod configuration.
  */
-
-
-/**
- * Recursively merge an old configuration into a new configuration.
- * 
- * @param {boolean | Object} o The old configuration value.
- * @param {boolean | Object} n The new configuration value.
- * @param {boolean} nReq If the new value is a required mod.
- * 
- * @returns {boolean | Object} The merged configuration.
- */
-function mergeModConfiguration(o, n, nReq = false){
-    if(typeof o === 'boolean'){
-        if(typeof n === 'boolean') return o
-        else if(typeof n === 'object'){
-            if(!nReq){
-                n.value = o
-            }
-            return n
-        }
-    } else if(typeof o === 'object'){
-        if(typeof n === 'boolean') return typeof o.value !== 'undefined' ? o.value : true
-        else if(typeof n === 'object'){
-            if(!nReq){
-                n.value = typeof o.value !== 'undefined' ? o.value : true
-            }
-
-            const newMods = Object.keys(n.mods)
-            for(let i=0; i<newMods.length; i++){
-
-                const mod = newMods[i]
-                if(o.mods[mod] != null){
-                    n.mods[mod] = mergeModConfiguration(o.mods[mod], n.mods[mod])
-                }
-            }
-
-            return n
-        }
-    }
-    // If for some reason we haven't been able to merge,
-    // wipe the old value and use the new one. Just to be safe
-    return n
-}
 
 function refreshDistributionIndex(remote, onSuccess, onError){
     if(remote){
@@ -308,4 +264,3 @@ function OndistributionIndexDone(res){
         }
     }
 }
-exports.OndistributionIndexDone = OndistributionIndexDone;

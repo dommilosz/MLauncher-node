@@ -6,6 +6,7 @@ const { shell } = require('electron')
 // Group #2: File Extension (jar, zip, or litemod)
 // Group #3: If it is disabled (if string 'disabled' is present)
 const MOD_REGEX = /^(.+(jar|zip|litemod))(?:\.(disabled))?$/
+const PACK_REGEX = /^(.+(zip))?$/
 const DISABLED_EXT = '.disabled'
 
 const SHADER_REGEX = /^(.+)\.zip$/
@@ -67,7 +68,33 @@ exports.scanForDropinMods = function(modsDir, version) {
     }
     return modsDiscovered
 }
-
+/**
+ * Scan for packs in resourcepacks folder
+ * 
+ * @param {string} modsDir The path to the mods directory.
+ * @param {string} version The minecraft version of the server configuration.
+ * 
+ * @returns {{fullName: string, name: string, ext: string, disabled: boolean}[]}
+ * An array of objects storing metadata about each discovered mod.
+ */
+exports.scanForPacks = function(modsDir, version) {
+    const modsDiscovered = []
+    if(fs.existsSync(modsDir)){
+        let modCandidates = fs.readdirSync(modsDir)
+        for(let file of modCandidates){
+            const match = PACK_REGEX.exec(file)
+            if(match != null){
+                modsDiscovered.push({
+                    fullName: match[0],
+                    name: match[1],
+                    ext: match[2],
+                    disabled: match[3] != null
+                })
+            }
+        }
+    }
+    return modsDiscovered
+}
 /**
  * Add dropin mods.
  * 

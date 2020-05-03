@@ -351,3 +351,11 @@ exports.isDevMode = function(){
 exports.getDistribution = function(){
     return data
 }
+
+exports.addInstance = function(inst){
+    dir= ConfigManager.getLauncherDirectory()+"/instances.json";
+    data.instances.push(inst);
+    fs.writeFile(dir,JSON.stringify(data),function(){
+        logger.log("Succesfully added new instance")
+    });
+}

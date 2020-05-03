@@ -1,7 +1,7 @@
 // Requirements
 const os     = require('os')
 const semver = require('semver')
-
+const fs = require('fs');
 const { JavaGuard } = require('./assets/js/assetguard')
 const DropinModUtil  = require('./assets/js/dropinmodutil')
 
@@ -284,10 +284,7 @@ function settingsSaveDisabled(v){
 /* Closes the settings view and saves all data. */
 settingsNavDone.onclick = () => {
     saveSettingsValues()
-    saveModConfiguration()
     ConfigManager.save()
-    saveDropinModConfiguration()
-    saveShaderpackSettings()
     switchView(getCurrentView(), VIEWS.landing)
 }
 
@@ -491,7 +488,6 @@ function resolveModsForUI(){
     const serv = ConfigManager.getSelectedServer()
 
     const distro = DistroManager.getDistribution()
-    const servConf = ConfigManager.getModConfiguration(serv)
 }
 
 /**
@@ -507,29 +503,14 @@ function bindModsToggleSwitch(){
             } else {
                 document.getElementById(v.getAttribute('formod')).removeAttribute('enabled')
             }
+            
+            var serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+            CACHE_SETTINGS_MODS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.id, 'mods')
+            DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR,v.attributes.formod.textContent,v.checked)
+            setTimeout(reloadDropinMods,1000);
+            
         }
     })
-}
-
-
-/**
- * Save the mod configuration based on the UI values.
- */
-function saveModConfiguration(){
-    const serv = ConfigManager.getSelectedServer()
-    const modConf = ConfigManager.getModConfiguration(serv)
-    modConf.mods = _saveModConfiguration(modConf.mods)
-    ConfigManager.setModConfiguration(serv, modConf)
-}
-
-/**
- * Recursively save mod config with submods.
- * 
- * @param {Object} modConf Mod config object to save.
- */
-function _saveModConfiguration(modConf){
-    
-    return modConf
 }
 
 // Drop-in mod elements.
@@ -560,11 +541,40 @@ function resolveDropinModsForUI(){
                                 </div>
                             </div>
                         </div>
+                        <label class="toggleSwitch">
+                            <input type="checkbox" formod="${dropin.fullName}" dropin ${!dropin.disabled ? 'checked' : ''}>
+                            <span class="toggleSwitchSlider"></span>
+                        </label>
                     </div>
                 </div>`
     }
 
     document.getElementById('settingsDropinModsContent').innerHTML = dropinMods
+}
+function resolvePacksForUI(){
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    CACHE_SETTINGS_PACKS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.id, 'resourcepacks')
+    CACHE_DROPIN_MODS = DropinModUtil.scanForPacks(CACHE_SETTINGS_PACKS_DIR, serv.minecraftVersion)
+
+    let dropinMods = ''
+
+    for(dropin of CACHE_DROPIN_MODS){
+        dropinMods += `<div id="${dropin.fullName}" class="settingsBaseMod settingsDropinMod" ${!dropin.disabled ? 'enabled' : ''}>
+                    <div class="settingsModContent">
+                        <div class="settingsModMainWrapper">
+                            <div class="settingsModStatus"></div>
+                            <div class="settingsModDetails">
+                                <span class="settingsModName">${dropin.name}</span>
+                                <div class="settingsDropinRemoveWrapper">
+                                    <button class="settingsPackRemoveButton" rempack="${dropin.fullName}">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+    }
+
+    document.getElementById('settingsPacksContent').innerHTML = dropinMods
 }
 
 /**
@@ -581,6 +591,31 @@ function bindDropinModsRemoveButton(){
             } else {
                 setOverlayContent(
                     `Failed to Delete<br>Drop-in Mod ${fullName}`,
+                    'Make sure the file is not in use and try again.',
+                    'Okay'
+                )
+                setOverlayHandler(null)
+                toggleOverlay(true)
+            }
+        }
+    })
+}
+/**
+ * Bind the remove button for each loaded resource pack.
+ */
+function bindPackRemoveButton(){
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    CACHE_SETTINGS_PACKS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.id, 'resourcepacks')
+    const sEls = settingsModsContainer.querySelectorAll('[rempack]')
+    Array.from(sEls).map((v, index, arr) => {
+        v.onclick = () => {
+            const fullName = v.getAttribute('rempack')
+            const res = DropinModUtil.deleteDropinMod(CACHE_SETTINGS_PACKS_DIR, fullName)
+            if(res){
+                document.getElementById(fullName).remove()
+            } else {
+                setOverlayContent(
+                    `Failed to Delete<br>Resource Pack ${fullName}`,
                     'Make sure the file is not in use and try again.',
                     'Okay'
                 )
@@ -621,30 +656,32 @@ function bindDropinModFileSystemButton(){
         reloadDropinMods()
     }
 }
+function bindPacksModFileSystemButton(){
+    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
+    CACHE_SETTINGS_PACKS_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.id, 'resourcepacks')
+    const fsBtn = document.getElementById('settingsPacksFileSystemButton')
+    fsBtn.onclick = () => {
+        DropinModUtil.validateDir(CACHE_SETTINGS_PACKS_DIR)
+        shell.openItem(CACHE_SETTINGS_PACKS_DIR)
+    }
+    fsBtn.ondragenter = e => {
+        e.dataTransfer.dropEffect = 'move'
+        fsBtn.setAttribute('drag', '')
+        e.preventDefault()
+    }
+    fsBtn.ondragover = e => {
+        e.preventDefault()
+    }
+    fsBtn.ondragleave = e => {
+        fsBtn.removeAttribute('drag')
+    }
 
-/**
- * Save drop-in mod states. Enabling and disabling is just a matter
- * of adding/removing the .disabled extension.
- */
-function saveDropinModConfiguration(){
-    for(dropin of CACHE_DROPIN_MODS){
-        const dropinUI = document.getElementById(dropin.fullName)
-        if(dropinUI != null){
-            const dropinUIEnabled = dropinUI.hasAttribute('enabled')
-            if(DropinModUtil.isDropinModEnabled(dropin.fullName) != dropinUIEnabled){
-                DropinModUtil.toggleDropinMod(CACHE_SETTINGS_MODS_DIR, dropin.fullName, dropinUIEnabled).catch(err => {
-                    if(!isOverlayVisible()){
-                        setOverlayContent(
-                            'Failed to Toggle<br>One or More Drop-in Mods',
-                            err.message,
-                            'Okay'
-                        )
-                        setOverlayHandler(null)
-                        toggleOverlay(true)
-                    }
-                })
-            }
-        }
+    fsBtn.ondrop = e => {
+        fsBtn.removeAttribute('drag')
+        e.preventDefault()
+
+        DropinModUtil.addDropinMods(e.dataTransfer.files, CACHE_SETTINGS_PACKS_DIR)
+        reloadDropinMods()
     }
 }
 
@@ -654,8 +691,6 @@ document.addEventListener('keydown', (e) => {
     if(getCurrentView() === VIEWS.settings && selectedSettingsTab === 'settingsTabMods'){
         if(e.key === 'F5'){
             reloadDropinMods()
-            saveShaderpackSettings()
-            resolveShaderpacksForUI()
         }
     }
 })
@@ -665,6 +700,10 @@ function reloadDropinMods(){
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
     bindModsToggleSwitch()
+
+    resolvePacksForUI()
+    bindPacksModFileSystemButton()
+    bindPackRemoveButton()
 }
 
 // Shaderpack
@@ -672,80 +711,6 @@ function reloadDropinMods(){
 let CACHE_SETTINGS_INSTANCE_DIR
 let CACHE_SHADERPACKS
 let CACHE_SELECTED_SHADERPACK
-
-/**
- * Load shaderpack information.
- */
-function resolveShaderpacksForUI(){
-    const serv = DistroManager.getDistribution().getServer(ConfigManager.getSelectedServer())
-    CACHE_SETTINGS_INSTANCE_DIR = path.join(ConfigManager.getInstanceDirectory(), serv.id)
-    CACHE_SHADERPACKS = DropinModUtil.scanForShaderpacks(CACHE_SETTINGS_INSTANCE_DIR)
-    CACHE_SELECTED_SHADERPACK = DropinModUtil.getEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR)
-
-    setShadersOptions(CACHE_SHADERPACKS, CACHE_SELECTED_SHADERPACK)
-}
-
-function setShadersOptions(arr, selected){
-    const cont = document.getElementById('settingsShadersOptions')
-    cont.innerHTML = ''
-    for(let opt of arr) {
-        const d = document.createElement('DIV')
-        d.innerHTML = opt.name
-        d.setAttribute('value', opt.fullName)
-        if(opt.fullName === selected) {
-            d.setAttribute('selected', '')
-            document.getElementById('settingsShadersSelected').innerHTML = opt.name
-        }
-        d.addEventListener('click', function(e) {
-            this.parentNode.previousElementSibling.innerHTML = this.innerHTML
-            for(let sib of this.parentNode.children){
-                sib.removeAttribute('selected')
-            }
-            this.setAttribute('selected', '')
-            closeSettingsSelect()
-        })
-        cont.appendChild(d)
-    }
-}
-
-function saveShaderpackSettings(){
-    let sel = 'OFF'
-    for(let opt of document.getElementById('settingsShadersOptions').childNodes){
-        if(opt.hasAttribute('selected')){
-            sel = opt.getAttribute('value')
-        }
-    }
-    DropinModUtil.setEnabledShaderpack(CACHE_SETTINGS_INSTANCE_DIR, sel)
-}
-
-function bindShaderpackButton() {
-    const spBtn = document.getElementById('settingsShaderpackButton')
-    spBtn.onclick = () => {
-        const p = path.join(CACHE_SETTINGS_INSTANCE_DIR, 'shaderpacks')
-        DropinModUtil.validateDir(p)
-        shell.openItem(p)
-    }
-    spBtn.ondragenter = e => {
-        e.dataTransfer.dropEffect = 'move'
-        spBtn.setAttribute('drag', '')
-        e.preventDefault()
-    }
-    spBtn.ondragover = e => {
-        e.preventDefault()
-    }
-    spBtn.ondragleave = e => {
-        spBtn.removeAttribute('drag')
-    }
-
-    spBtn.ondrop = e => {
-        spBtn.removeAttribute('drag')
-        e.preventDefault()
-
-        DropinModUtil.addShaderpacks(e.dataTransfer.files, CACHE_SETTINGS_INSTANCE_DIR)
-        saveShaderpackSettings()
-        resolveShaderpacksForUI()
-    }
-}
 
 // Server status bar functions.
 
@@ -784,15 +749,6 @@ document.getElementById('settingsSwitchServerButton').addEventListener('click', 
 })
 
 /**
- * Save mod configuration for the current selected server.
- */
-function saveAllModConfigurations(){
-    saveModConfiguration()
-    ConfigManager.save()
-    saveDropinModConfiguration()
-}
-
-/**
  * Function to refresh the mods tab whenever the selected
  * server is changed.
  */
@@ -809,12 +765,14 @@ function animateModsTabRefresh(){
 function prepareModsTab(first){
     resolveModsForUI()
     resolveDropinModsForUI()
-    resolveShaderpacksForUI()
     bindDropinModsRemoveButton()
     bindDropinModFileSystemButton()
-    bindShaderpackButton()
     bindModsToggleSwitch()
     loadSelectedServerOnModsTab()
+
+    resolvePacksForUI()
+    bindPacksModFileSystemButton()
+    bindPackRemoveButton()
 }
 
 /**

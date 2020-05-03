@@ -1,6 +1,6 @@
 <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
 <div id="overlayContainer" class="Container-menu" style="">
-    <div id="serverSelectContent" style="display: none;">
+    <div id="serverSelectContent" style="">
         <span id="serverSelectHeader">Available Servers</span>
         <div id="serverSelectList">
             <div id="serverSelectListScrollable">
@@ -11,25 +11,71 @@
             <div style="display: inline;">
             <button id="serverSelectConfirm" class="overlayKeybindEnter" type="submit">Select</button>
             <button id="serverSelectCreate" type="submit">Create</button>
+            <button id="serverSelectCancel" class="overlayKeybindEsc">Cancel</button>
+            
             </div>
             <div id="serverSelectCancelWrapper">
-                <button id="serverSelectCancel" class="overlayKeybindEsc">Cancel</button>
+                
             </div>
         </div>
     </div>
-    <div id="serverCreateContent" style="">
-        <span id="serverCreateHeader">Create Instance</span>
-        <div id="serverCreateList">
-            <input type="text" id="Create_InstanceName" placeholder="Name"><br>
-            <input type="text" id="Create_InstanceDesc" placeholder="Description"><br>
-            <select id="Create_InstanceMCVersions"></select>
+    <div id="serverCreateContent" style="display: none;">
+        <div style="margin-left: 300px;margin-top: 5%;display: block;position: absolute;border: white;border-style: double;background: #292929;">
+            <img src="./assets/images/grass.png" style="
+            width: 150px; height: 150px;
+        " class="icon-select">
+        <div style="
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        ">ICON</div>
         </div>
-        <div id="serverCreateActions" >
-            <div style="display: inline;">
-            <button id="serverCreate" type="submit">Create</button>
+        <div style="width: 250px;">
+            <div id="serverCreateHeader" style="text-align: center; width: 100%;">Create Instance</div>
+            
+            <div id="serverCreateList">
+                <input type="text" id="Create_InstanceName" placeholder="Name"><br>
+                <input type="text" id="Create_InstanceDesc" placeholder="Description"><br>
+                <div>
+                <label class="toggleSwitch" style="width: 100%; max-width: 250px;">
+                    Allow Snapshots
+                    <input type="checkbox" id="?AllowSnapshots">
+                    <span class="toggleSwitchSlider" id="?AllowSnapshots-ev" style="width: 15%; left:80%;"></span>
+                </label>
+                <label class="toggleSwitch" style="width: 100%; max-width: 250px;">
+                    Allow Beta
+                    <input type="checkbox" id="?AllowBeta">
+                    <span class="toggleSwitchSlider" id="?AllowBeta-ev" style="width: 15%; left:80%;"></span>
+                </label>
+                <label class="toggleSwitch" style="width: 100%; max-width: 250px;">
+                    Allow Alpha
+                    <input type="checkbox" id="?AllowAlpha">
+                    <span class="toggleSwitchSlider" id="?AllowAlpha-ev" style="width: 15%; left:80%;"></span>
+                </label>
+                </div>
+                <br>
+                <div class="settingsSelectContainer" style="width: 100%; max-width: 250px;">
+                    <div class="settingsSelectSelected" id="settingsMCVersionsSelected" style="width: auto;max-width: auto;">Select MC Version</div>
+                    
+                    <div class="settingsSelectOptions" id="settingsMCVersionsOptions" hidden>
+                        
+                    </div>
+                    
+                </div>
             </div>
-            <div id="serverSelectCancelWrapper">
-                <button id="serverCreateCancel" class="overlayKeybindEsc">Cancel</button>
+
+            <input id="file-input" type="file" name="name" style="display: none;" accept="image/*"/>
+            <br><br><br><br><br>
+            <div id="serverCreateActions" style="margin-left: 30%;">
+                <div style="display: inline;">
+                <button id="serverCreate" type="submit">Create</button>
+                
+                <div id="serverSelectCancelWrapper" style="display: inline;">
+                    <button id="serverCreateCancel" class="overlayKeybindEsc">Cancel</button>
+                </div>
+                </div>
+                
             </div>
         </div>
     </div>
