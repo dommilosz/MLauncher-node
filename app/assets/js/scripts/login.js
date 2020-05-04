@@ -65,6 +65,7 @@ function validateEmail(value){
             if(lp){
                 loginDisabled(false)
             }
+            validatePassword();
         }
     } else {
         lu = false
@@ -79,17 +80,13 @@ function validateEmail(value){
  * @param {string} value The password value.
  */
 function validatePassword(value){
-    if(value){
+    
         loginPasswordError.style.opacity = 0
         lp = true
         if(lu){
             loginDisabled(false)
         }
-    } else {
-        lp = false
-        showError(loginPasswordError, Lang.queryJS('login.error.invalidValue'))
-        loginDisabled(true)
-    }
+    
 }
 
 // Emphasize errors with shake when focus is lost.

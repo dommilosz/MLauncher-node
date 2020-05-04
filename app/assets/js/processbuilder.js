@@ -10,6 +10,8 @@ const { Util, Library }  = require('./assetguard')
 const ConfigManager            = require('./configmanager')
 const DistroManager            = require('./distromanager')
 const LoggerUtil               = require('./loggerutil')
+const { Client, Authenticator }= require('minecraft-launcher-core');
+const launcher = new Client();
 
 const logger = LoggerUtil('%c[ProcessBuilder]', 'color: #003996; font-weight: bold')
 
@@ -36,62 +38,43 @@ class ProcessBuilder {
      */
     build(){
         fs.ensureDirSync(this.gameDir)
+        
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
-        this.setupLiteLoader()
-        logger.log('Using liteloader:', this.usingLiteLoader)
-        
-        
-        // Mod list below 1.13
-        if(!Util.mcVersionAtLeast('1.13', this.server.minecraftVersion)){
-            this.constructModList('forge', modObj.fMods, true)
-            if(this.usingLiteLoader){
-                this.constructModList('liteloader', modObj.lMods, true)
+        var auth = {acces_token:this.authUser.accessToken,client_token:ConfigManager.getClientToken(),uuid:this.authUser.uuid,name:this.authUser.displayName}
+        let opts = {
+            clientPackage: null,
+            // For production launchers, I recommend not passing 
+            // the getAuth function through the authorization field and instead
+            // handling authentication outside before you initialize
+            // MCLC so you can handle auth based errors and validation!
+            authorization: auth,
+            root: this.gameDir,
+            version: {
+                number: this.server.minecraftVersion.number,
+                type: this.server.minecraftVersion.type
+            },
+            memory: {
+                max: ConfigManager.getMaxRAM().replace('G','')*1000,
+                min: ConfigManager.getMinRAM().replace('G','')*1000
             }
         }
+        setLaunchDetails('Downloading Files')
+        launcher.launch(opts);
+
+        launcher.on('debug', (e) => console.log(e));
+        launcher.on('data', (e) => console.log(e));
+        launcher.on('close',(code)=>{
+            
+            toggleLaunchArea(false)
+        })
+        launcher.on('progress',(o)=>{
+            var progress = Math.floor((o.task)/(o.total)*100);
+            
+            setLaunchPercentage(progress, 100)
+            setLaunchDetails('Downloading ' + o.type)
+        })
         
-        const uberModArr = modObj.fMods.concat(modObj.lMods)
-        let args = this.constructJVMArguments(uberModArr, tempNativePath)
-
-        if(Util.mcVersionAtLeast('1.13', this.server.minecraftVersion)){
-            args = args.concat(this.constructModArguments(modObj.fMods))
-        }
-
-        logger.log('Launch Arguments:', args)
-
-        const child = child_process.spawn(ConfigManager.getJavaExecutable(), args, {
-            cwd: this.gameDir,
-            detached: ConfigManager.getLaunchDetached()
-        })
-
-        if(ConfigManager.getLaunchDetached()){
-            child.unref()
-        }
-
-        child.stdout.setEncoding('utf8')
-        child.stderr.setEncoding('utf8')
-
-        const loggerMCstdout = LoggerUtil('%c[Minecraft]', 'color: #36b030; font-weight: bold')
-        const loggerMCstderr = LoggerUtil('%c[Minecraft]', 'color: #b03030; font-weight: bold')
-
-        child.stdout.on('data', (data) => {
-            loggerMCstdout.log(data)
-        })
-        child.stderr.on('data', (data) => {
-            loggerMCstderr.log(data)
-        })
-        child.on('close', (code, signal) => {
-            logger.log('Exited with code', code)
-            fs.remove(tempNativePath, (err) => {
-                if(err){
-                    logger.warn('Error while deleting temp dir', err)
-                } else {
-                    logger.log('Temp dir deleted successfully.')
-                }
-            })
-        })
-
-        return child
     }
 
     /**

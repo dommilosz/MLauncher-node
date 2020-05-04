@@ -2926,7 +2926,7 @@ input:checked + .toggleSwitchSlider:before {
     outline: none;
 }
 
-#settingsMediaContainer {
+#settingsMediaContainer,#reloadMediaContainer {
     position: relative;
 }
 
@@ -2942,7 +2942,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 
 /* Settings tooltip styles. */
-#settingsTooltip {
+#settingsTooltip,#reloadTooltip {
     visibility: hidden;
     opacity: 0;
     width: 75px;

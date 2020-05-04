@@ -6,6 +6,7 @@
         "login": {
             "error": {
                 "invalidValue": "* Invalid Value",
+                "offlineMode": "* Offline mode if empty",
                 "requiredValue": "* Required",
                 "userMigrated": {
                     "title": "Error During Login:<br>Invalid Credentials",

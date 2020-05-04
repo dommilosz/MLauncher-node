@@ -288,33 +288,33 @@ function refreshMCVersionOptions() {
 	if (allow_snapshots)
 		newarr.push({
 			name: "Latest Snapshot " + arr.latest.snapshot,
-			fullName: arr.latest.snapshot,
+			fullName: JSON.stringify({number:arr.latest.snapshot,type:"snapshot"}),
 		});
 	newarr.push({
 		name: "Latest Release " + arr.latest.release,
-		fullName: arr.latest.release,
+		fullName: JSON.stringify({number:arr.latest.release,type:"release"}),
 	});
 
 	arr.versions.forEach((element) => {
 		if (allow_snapshots && element.type == "snapshot")
 			newarr.push({
 				name: "Snapshot " + element.id,
-				fullName: element.id,
+				fullName: JSON.stringify({number:element.id,type:element.type}),
 			});
 		if (element.type == "release")
 			newarr.push({
 				name: "Release " + element.id,
-				fullName: element.id,
+				fullName: JSON.stringify({number:element.id,type:element.type}),
 			});
 		if (allow_alpha && element.type == "old_alpha")
 			newarr.push({
 				name: "Alpha " + element.id,
-				fullName: element.id,
+				fullName: JSON.stringify({number:element.id,type:element.type}),
 			});
 		if (allow_beta && element.type == "old_beta")
 			newarr.push({
 				name: "Beta " + element.id,
-				fullName: element.id,
+				fullName: JSON.stringify({number:element.id,type:element.type}),
 			});
 	});
 
@@ -419,12 +419,12 @@ document.getElementById("file-input").addEventListener("change", (evt) => {
 document.getElementById("serverCreate").addEventListener("click", () => {
 	instname = document.getElementById("Create_InstanceName").value;
 	instdesc = document.getElementById("Create_InstanceDesc").value;
-	instversion = document.querySelector(".settingsSelectOptions div[selected]")
-        .attributes.value.textContent;
+	instversion = JSON.parse( document.querySelector(".settingsSelectOptions div[selected]")
+	.attributes.value.textContent);
 	insticon = document.getElementsByClassName("icon-select")[0].src;
 	instid = (Math.random()*100000000000000000).toString();
-	instance = {id:instid,name:instname,description:instdesc,minecraftVersion:instversion,icon:insticon};
-
+	instance = {id:instid,name:instname,description:instdesc,minecraftVersion:{number:instversion.number,type:instversion.type},icon:insticon};
+	
 	distro.addInstance(instance);
 	$("#serverCreateContent").fadeOut(250, () => {
 		$("#serverSelectContent").fadeIn(250);
@@ -496,7 +496,7 @@ function populateServerListings() {
 				}</span>
                 <div class="serverListingInfo">
                     <div class="serverListingVersion">${
-						serv.minecraftVersion
+						serv.minecraftVersion.number
 					}</div>
                     ${
 						serv.selected

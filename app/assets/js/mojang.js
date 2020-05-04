@@ -91,38 +91,43 @@ exports.statusToHex = function (status) {
  */
 exports.status = function () {
 	return new Promise((resolve, reject) => {
-		request.get(
-			"https://status.mojang.com/check",
-			{
-				json: true,
-				timeout: 2500,
-			},
-			function (error, response, body) {
-				if (error || response.statusCode !== 200) {
-					logger.warn("Unable to retrieve Mojang status.");
-					logger.debug(
-						"Error while retrieving Mojang statuses:",
-						error
-					);
-					//reject(error || response.statusCode)
-					for (let i = 0; i < statuses.length; i++) {
-						statuses[i].status = "grey";
-					}
-					resolve(statuses);
-				} else {
-					for (let i = 0; i < body.length; i++) {
-						const key = Object.keys(body[i])[0];
-						inner: for (let j = 0; j < statuses.length; j++) {
-							if (statuses[j].service === key) {
-								statuses[j].status = body[i][key];
-								break inner;
+		setTimeout(function () {
+			var req = new XMLHttpRequest();
+			req.open(
+				"GET",
+				"https://status.mojang.com/check",
+				true
+			); /* Argument trzeci, wartość true, określa, że żądanie ma być asynchroniczne */
+			req.onreadystatechange = function (aEvt) {
+				if (req.readyState == 4) {
+					if (req.status != 200) {
+						logger.warn("Unable to retrieve Mojang status.");
+						logger.debug(
+							('Error while retrieving Mojang statuses: req status: '+req.status)
+						);
+						//reject(error || response.statusCode)
+						for (let i = 0; i < statuses.length; i++) {
+							statuses[i].status = "grey";
+						}
+						resolve(statuses);
+					} else {
+						body = req.responseText;
+						response = JSON.parse(body);
+						for (let i = 0; i < response.length; i++) {
+							const key = response[i];
+							inner: for (let j = 0; j < statuses.length; j++) {
+								if(response[i][statuses[j].service])
+									statuses[j].status = response[i][statuses[j].service];
+								
 							}
 						}
+						resolve(statuses);
 					}
-					resolve(statuses);
 				}
-			}
-		);
+			};
+			req.send(null);
+		}, 100);
+		
 	});
 };
 

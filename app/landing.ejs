@@ -28,10 +28,20 @@
                             </button>
                         </div>
                     </div>
+                    <div id="internalMedia">
+                        <div class="mediaContainer" id="settingsMediaContainer">
+                            <button class="mediaButton" id="reloadMediaButton">
+                                <svg id="settingsSVG" class="mediaSVG" viewBox="0 0 1024 1024">
+                                    <path d="M1024 384 640 384 783.53 240.47C711 167.944 614.57 128 512 128 409.43 128 313 167.944 240.47 240.47 167.944 313 128 409.43 128 512 128 614.57 167.944 711 240.47 783.53 313 856.056 409.43 896 512 896 614.57 896 711 856.056 783.528 783.528 789.584 777.474 795.388 771.236 800.984 764.86L897.304 849.142C803.458 956.308 665.64 1024 512 1024 229.23 1024 0 794.77 0 512 0 229.23 229.23 0 512 0 653.386 0 781.368 57.326 874.016 149.984L1024 0 1024 384Z" id="svg_3" class=""/>
+                                </svg>
+                                <div id="settingsTooltip">Reload</div>
+                            </button>
+                        </div>
+                    </div>
                     <div class="mediaDivider"></div>
                     <div id="externalMedia">
                         <div class="mediaContainer">
-                            <a href="https://github.com/dscalZi/HeliosLauncher" class="mediaURL" id="linkURL">
+                            <a href="https://github.com/dommilosz/Mlauncher-node" class="mediaURL" id="linkURL">
                                 <svg id="linkSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
                                     <g>
                                         <path d="M75.37,65.51a3.85,3.85,0,0,0-1.73.42,8.22,8.22,0,0,1,.94,3.76A8.36,8.36,0,0,1,66.23,78H46.37a8.35,8.35,0,1,1,0-16.7h9.18a21.51,21.51,0,0,1,6.65-8.72H46.37a17.07,17.07,0,1,0,0,34.15H66.23A17,17,0,0,0,82.77,65.51Z"/>
@@ -40,7 +50,7 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="mediaContainer">
+                        <div class="mediaContainer" style="display: none;">
                             <a href="#" class="mediaURL" id="twitterURL" disabled>
                                 <svg id="twitterSVG" class="mediaSVG" viewBox="0 0 5000 4060" preserveAspectRatio="xMidYMid meet">	
                                     <g>
@@ -49,7 +59,7 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="mediaContainer">
+                        <div class="mediaContainer" style="display: none;">
                             <a href="#" class="mediaURL" id="instagramURL" disabled>
                                 <svg id="instagramSVG" class="mediaSVG" viewBox="0 0 5040 5040">
                                     <defs>
@@ -69,7 +79,7 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="mediaContainer">
+                        <div class="mediaContainer" style="display: none;">
                             <a href="#" class="mediaURL" id="youtubeURL" disabled>
                                 <svg id="youtubeSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
                                     <g>
@@ -78,7 +88,7 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="mediaContainer">
+                        <div class="mediaContainer" style="display: none;">
                             <a href="https://discord.gg/zNWUXdt" class="mediaURL" id="discordURL">
                                 <svg id="discordSVG" class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
                                     <g>
@@ -144,7 +154,9 @@
                 <div id="launch_content">
                     <button id="launch_button">PLAY</button>
                     <div class="bot_divider"></div>
+                    
                     <img src="./assets/images/grass.png" id="icon-preview" style="width:30px;height: 30px;">
+                    
                     <button style="padding-left: 10px;" id="server_selection_button" class="bot_label">&#8226; No Profile Selected</button>
                 </div>
                 <div id="launch_details">
