@@ -18,13 +18,13 @@ LangLoader.loadLanguage('en_US')
 
 function onDistroLoad(data){
     if(data != null){
-        
+        try{
         // Resolve the selected server if its value has yet to be set.
         if(ConfigManager.getSelectedServer() == null || data.getServer(ConfigManager.getSelectedServer()) == null){
             logger.log('Determining default selected server..')
             ConfigManager.setSelectedServer(data.getMainServer().id)
             ConfigManager.save()
-        }
+        }}catch{}
     }
     
     ipcRenderer.send('distributionIndexDone', data != null)

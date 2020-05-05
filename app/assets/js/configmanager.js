@@ -340,14 +340,15 @@ exports.updateAuthAccount = function(uuid, accessToken){
  * 
  * @returns {Object} The authenticated account object created by this action.
  */
-exports.addAuthAccount = function(uuid, accessToken, username, displayName,online){
+exports.addAuthAccount = function(uuid, accessToken, username, displayName,online,type){
     config.selectedAccount = uuid
     config.authenticationDatabase[uuid] = {
         accessToken,
         username: username.trim(),
         uuid: uuid.trim(),
         displayName: displayName.trim(),
-        online:online
+        online:online,
+        type:type
     }
     return config.authenticationDatabase[uuid]
 }
@@ -636,4 +637,15 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
+}
+
+exports.relaunchApp = function(){
+    bounds = {
+        iW : window.innerWidth,
+        oW : window.outerWidth,
+        iH : window.innerHeight,
+        oH : window.outerHeight
+    }
+    ipcRenderer.send('init_reload',bounds);
+    window.close();
 }

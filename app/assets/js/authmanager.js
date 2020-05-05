@@ -62,7 +62,7 @@ exports.addAccount = async function (username, password) {
                         resp.result.session,
                         resp.result.mcname,
                         resp.result.mcname,
-                        true
+                        true,"mcleaks"
                     );
                     return ret;
                 }
@@ -76,7 +76,7 @@ exports.addAccount = async function (username, password) {
 				uuid(),
 				username,
 				username,
-				false
+				false,"cracked"
 			);
 			return ret;
 		}
@@ -92,7 +92,7 @@ exports.addAccount = async function (username, password) {
 				session.accessToken,
 				username,
 				session.selectedProfile.name,
-				true
+				true,"mojang"
 			);
 			if (ConfigManager.getClientToken() == null) {
 				ConfigManager.setClientToken(session.clientToken);

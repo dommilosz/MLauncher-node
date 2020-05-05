@@ -222,6 +222,8 @@ document.getElementById("serverSelectConfirm").addEventListener("click", () => {
 		);
 		updateSelectedServer(serv);
 		toggleOverlay(false);
+	}else{
+		updateSelectedServer(null);
 	}
 });
 document.getElementById("serverSelectCreate").addEventListener("click", () => {
@@ -375,6 +377,10 @@ document
 
 // Bind server select cancel button.
 document.getElementById("serverSelectCancel").addEventListener("click", () => {
+	const listings = document.getElementsByClassName("serverListing");
+	if (listings.length <= 0) {
+		updateSelectedServer(null);
+	}
 	toggleOverlay(false);
 });
 document.getElementById("serverCreateCancel").addEventListener("click", () => {
@@ -422,7 +428,10 @@ document.getElementById("serverCreate").addEventListener("click", () => {
 	instversion = JSON.parse( document.querySelector(".settingsSelectOptions div[selected]")
 	.attributes.value.textContent);
 	insticon = document.getElementsByClassName("icon-select")[0].src;
-	instid = (Math.random()*100000000000000000).toString();
+	instid = instname;
+	distro.getDistribution().instances.forEach((e)=>{
+	if(e.id == instid) {instid+="2"}
+	})
 	instance = {id:instid,name:instname,description:instdesc,minecraftVersion:{number:instversion.number,type:instversion.type},icon:insticon};
 	
 	distro.addInstance(instance);
@@ -480,6 +489,7 @@ function setAccountListingHandlers() {
 }
 
 function populateServerListings() {
+	try{
 	const distro = DistroManager.getDistribution();
 	const giaSel = ConfigManager.getSelectedServer();
 	const servers = distro.getServers();
@@ -512,13 +522,21 @@ function populateServerListings() {
                     </div>`
 							: ""
 					}
+					<div class="settingsDropinRemoveWrapper">
+                                    <button class="settingsDropinRemoveButton" style="
+									position: absolute;
+									margin-top: -25;
+									margin-left: 330px;
+								" reminst="${serv.id}">Remove</button>
+                                </div>
+                            </div>
                 </div>
             </div>
         </button>`;
 	}
 	document.getElementById(
 		"serverSelectListScrollable"
-	).innerHTML = htmlString;
+	).innerHTML = htmlString;}catch{}
 }
 
 function populateAccountListings() {
@@ -542,9 +560,30 @@ function populateAccountListings() {
 		"accountSelectListScrollable"
 	).innerHTML = htmlString;
 }
+function bindInstanceRemoveButton(){
+    const sEls = document.querySelectorAll('[reminst]')
+    Array.from(sEls).map((v, index, arr) => {
+        v.onclick = () => {
+            const fullName =v.attributes.reminst.textContent
+            distro.RemoveInstance(fullName);
+            if(true){
+                prepareServerSelectionList()
+            } else {
+                setOverlayContent(
+                    `Failed to Delete<br>Instance ${fullName}`,
+                    'Make sure the file is not in use and try again.',
+                    'Okay'
+                )
+                setOverlayHandler(null)
+                toggleOverlay(true)
+            }
+        }
+    })
+}
 
 function prepareServerSelectionList() {
 	populateServerListings();
+	bindInstanceRemoveButton()
 	setServerListingHandlers();
 }
 

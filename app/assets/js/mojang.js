@@ -297,26 +297,27 @@ MCVersions = null;
 exports.getMCVersions = function () {
 	return new Promise((resolve, reject) => {
 		if (MCVersions == null) {
-			request.get(
+			var req = new XMLHttpRequest();
+			req.open(
+				"GET",
 				"https://launchermeta.mojang.com/mc/game/version_manifest.json",
-				{
-					json: true,
-					timeout: 2500,
-				},
-				function (error, response, body) {
-					if (error || response.statusCode !== 200) {
-						logger.warn("Unable to retrieve Minecraft Versions.");
-						logger.debug(
-							"Error while retrieving Minecraft Versions:",
-							error
-						);
-						reject(error || response.statusCode);
-					} else {
-						MCVersions = body;
-						resolve(MCVersions);
-					}
-				}
+				false
 			);
-		}
+			req.send(null); 
+			if (req.readyState == 4) {
+				if (req.status != 200) {
+					logger.warn("Unable to retrieve Minecraft Versions.");
+					logger.debug(
+						"Error while retrieving Minecraft Versions:",
+						error
+					);
+					reject(error || response.statusCode);
+				} else {
+					MCVersions = JSON.parse(req.responseText);
+					resolve(MCVersions);
+				}
+			}
+			
+		}else resolve(MCVersions)
 	});
 };

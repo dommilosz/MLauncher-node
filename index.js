@@ -92,12 +92,19 @@ app.allowRendererProcessReuse = true
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+isReload = false;
+bounds = {
+    iW : 0,
+    oW : 980,
+    iH : 0,
+    oH : 552
+}
 
 function createWindow() {
 
     win = new BrowserWindow({
-        width: 980,
-        height: 552,
+        width: bounds.oW,
+        height: bounds.oH,
         icon: getPlatformIcon('SealCircle'),
         frame: false,
         webPreferences: {
@@ -123,9 +130,12 @@ function createWindow() {
     win.removeMenu()
 
     win.resizable = true
-
-    win.on('closed', () => {
+    win.on('closed', (event) => {
         win = null
+    })
+    ipcMain.on('init_reload',(event,arg)=>{
+        //bounds = arg;
+        isReload = true;
     })
 }
 
@@ -213,7 +223,14 @@ app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
-        app.quit()
+        if(!isReload){
+            app.quit()
+        }else{
+            createWindow();
+            createMenu();
+            isReload=false;
+        }
+        
     }
 })
 
