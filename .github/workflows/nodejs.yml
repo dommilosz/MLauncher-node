@@ -40,9 +40,9 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: release-exe
-        path: dist/*.exe
+        path: dist/mlauncher.exe
     - name: Archive production artifacts
       uses: actions/upload-artifact@v1
       with:
         name: release-exe
-        path: dist/*.BLOCKMAP
+        path: dist/mlauncher.BLOCKMAP
