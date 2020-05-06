@@ -26,22 +26,22 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run-script dist:win
-    - name: Archive production artifacts
+    - name: Archive production artifacts (ALL)
       uses: actions/upload-artifact@v1
       with:
         name: dist
         path: dist
-    - name: Archive production artifacts
+    - name: Archive production artifacts (ZIP)
       uses: actions/upload-artifact@v1
       with:
         name: release-zip
         path: dist/win-unpacked
-    - name: Archive production artifacts
+    - name: Archive production artifacts (EXE)
       uses: actions/upload-artifact@v1
       with:
         name: release-exe
         path: dist/mlauncher.exe
-    - name: Archive production artifacts
+    - name: Archive production artifacts (BLOCKMAP)
       uses: actions/upload-artifact@v1
       with:
         name: release-exe
