@@ -31,4 +31,18 @@ jobs:
       with:
         name: dist
         path: dist
-      
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: release-zip
+        path: dist/win-unpacked
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: release-exe
+        path: dist/*.exe
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: release-exe
+        path: dist/*.BLOCKMAP
