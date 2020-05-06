@@ -1,7 +1,7 @@
 {
-  "name": "helioslauncher",
+  "name": "mlauncher",
   "version": "1.7.0",
-  "productName": "Helios Launcher",
+  "productName": "MLauncher",
   "description": "Modded Minecraft Launcher",
   "license": "UNLICENSED",
   "homepage": "https://github.com/dommilosz/Mlauncher-node",
