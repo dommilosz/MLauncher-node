@@ -16,6 +16,8 @@
 * 🔒 Full account management.
   * Add multiple accounts and easily switch between them.
   * Credentials are never stored and transmitted directly to Mojang.
+  * You can use Cracked and MCLeaks accounts
+  * To Use MCLeaks type in password field MC:LEAKS and in username your token
 * 📂 Efficient asset management.
   * Receive client updates as soon as we release them.
   * Files are validated before launch. Corrupt or incorrect files will be redownloaded.
