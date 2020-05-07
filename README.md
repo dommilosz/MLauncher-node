@@ -4,7 +4,7 @@
 
 <em><h5 align="center">(formerly Electron Launcher)</h5></em>
 
-[<p align="center"><img src="https://img.shields.io/travis/dommilosz/Mlauncher-node.svg?style=for-the-badge" alt="travis">](https://travis-ci.org/dommilosz/Mlauncher-node) [<img src="https://img.shields.io/github/downloads/dommilosz/Mlauncher-node/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dommilosz/Mlauncher-node/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="stark"></p>
+[<p align="center"><img src="https://img.shields.io/appveyor/build/dommilosz/MLauncher?style=for-the-badge" alt="appveyor">](https://travis-ci.org/dommilosz/Mlauncher-node) [<img src="https://img.shields.io/github/downloads/dommilosz/MLauncher/total?style=for-the-badge" alt="downloads">](https://github.com/dommilosz/Mlauncher-node/releases) <img src="https://img.shields.io/badge/Platform-windows%20|%20linux-green?style=for-the-badge" alt="platforms"></p>
 
 <p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
 
