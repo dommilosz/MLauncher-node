@@ -1,4 +1,4 @@
-<p align="center"><img src="./app/assets/images/SealCircle.png" width="150px" height="150px" alt="aventium softworks"></p>
+<p align="center"><img src="./app/assets/images/lapis.png" width="150px" height="150px" alt="aventium softworks"></p>
 
 <h1 align="center">MLauncher</h1>
 
@@ -55,9 +55,9 @@ If you download from the [Releases](https://github.com/dommilosz/Mlauncher-node/
 
 | Platform | File |
 | -------- | ---- |
-| Windows x64 | `helioslauncher-setup-VERSION.exe` |
-| macOS | `helioslauncher-VERSION.dmg` |
-| Linux x64 | `helioslauncher-VERSION-x86_64.AppImage` |
+| Windows x64 | `mlauncher-setup-VERSION.exe` |
+| Linux x64 | `mlauncher-VERSION-x86_64.AppImage` |
+| macOS | `mlauncher-VERSION.dmg` |
 
 ## Console
 
@@ -90,7 +90,7 @@ If you want to export the console output, simply right click anywhere on the con
 
 ```console
 > git clone https://github.com/dommilosz/Mlauncher-node.git
-> cd HeliosLauncher
+> cd MLauncher
 > npm install
 ```
 
