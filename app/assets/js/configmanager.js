@@ -45,14 +45,15 @@ const configPathLEGACY = path.join(dataPath, 'config.json')
 const firstLaunch = !fs.existsSync(configPath) && !fs.existsSync(configPathLEGACY)
 
 exports.getAbsoluteMinRAM = function(){
-    const mem = os.totalmem()
-    return mem >= 6000000000 ? 3 : 2
+    //const mem = os.totalmem()
+    //return mem >= 6000000000 ? 3 : 2
+    return 1;
 }
 
 exports.getAbsoluteMaxRAM = function(){
     const mem = os.totalmem()
-    const gT16 = mem-16000000000
-    return Math.floor((mem-1000000000-(gT16 > 0 ? (Number.parseInt(gT16/8) + 16000000000/4) : mem/4))/1000000000)
+    var memingb = mem/1024/1024/1024
+    return Math.floor(0.80*memingb)
 }
 
 function resolveMaxRAM(){
